@@ -1,0 +1,98 @@
+---
+title: "timevis Quilt"
+author: "myTinyShinys"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+runtime: shiny    
+---
+
+```{r setup, include=FALSE}
+# load libraries
+library(flexdashboard)
+library(timevis)
+library(dplyr)
+```
+
+Inputs {.sidebar data-width=250}
+-------------------------------------
+
+``` {r}
+# brief description
+includeMarkdown("info.md")
+hr()
+# variable inputs - no need for action button
+sliderInput("rows","Rows",min=1,max=20,value=12)
+sliderInput("columns","Columns",min=1,max=11,value=11)
+sliderInput("opacity","Opacity",min=0.1,max=1,value=0.6)
+
+# less than 1 sec causes issues
+sliderInput("redraw","Automatic Redraw (ms)",min=1000,max=100000,value=3000)
+
+
+```
+
+
+Column {data-width=650}
+-----------------------------------------------------------------------
+
+### {-}
+
+```{r}
+
+renderTimevis({
+  
+  # repeats after selected time period
+   invalidateLater(input$redraw, session)
+  
+cols <- input$columns
+rows <- input$rows
+tot <- cols*rows
+
+# start, end,
+start <- rep(c(1:cols),rows)
+end <- rep(c(2:(cols+1)),rows)
+
+
+# creates number of rows
+group <- rep(1:rows,each=cols)
+
+
+
+# method of creating a random background for each cell
+a <- round(runif(tot,min=1,max=256),0) 
+b <- round(runif(tot,min=1,max=256),0)
+c <- round(runif(tot,min=1,max=256),0)
+
+# if wanted random cell opacity to replace 
+#d <- round(runif(tot),1) 
+
+
+style <- character()
+for (i in 1:tot) {
+  style[i] <- paste0("background: rgba(",paste(a[i],b[i],c[i],input$opacity,sep=","),");")
+}
+
+
+df <- data.frame(group=group,start=start,end=end,style=style, stringsAsFactors=FALSE)
+
+# additional paramteres for timevis function
+df$content <- ""
+df$type <- 'background'
+
+content <- rep('a',rows) # need a value to create a reasonably sized row
+id <- 1:rows
+
+df %>% 
+  timevis(groups = data.frame(id = id, content = content, style="color: white;"), # hack to get rid of group name
+          showZoom = FALSE,
+          options=list(showMajorLabels = FALSE,
+                       showMinorLabels = FALSE))
+
+
+})
+
+```
+
+
