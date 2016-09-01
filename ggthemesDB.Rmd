@@ -1,0 +1,171 @@
+---
+title: "ggthemes"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: rows
+    vertical_layout: fill
+runtime: shiny    
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(ggplot2)
+library(ggthemes)
+```
+
+```{r input}
+
+selectInput("choice","Select Plot",c("Histogram","Scatter"))
+
+```
+
+
+```{r plots}
+
+p1 <- ggplot(iris, aes(Sepal.Length,fill="red",colour="grey")) + geom_histogram()
+
+p2 <- ggplot(mtcars, aes(x = wt, y = mpg, colour = factor(gear))) +
+  geom_point() +
+  ggtitle("Cars")
+
+```
+
+Row
+-----------------------------------------------------------------------
+
+### Economist 
+
+```{r economist}
+
+output$economist <- renderPlot({
+
+    if (input$choice=="Histogram")  p <-p1 + theme_economist() + scale_colour_economist() 
+if (input$choice=="Scatter") p <-p2 + theme_economist() + scale_colour_economist() 
+  
+p
+
+})
+plotOutput("economist")
+
+```
+
+
+### Solarized light
+
+```{r solarized_l}
+
+output$light <- renderPlot({
+  p <- switch(
+  input$choice,
+  "Histogram" = p1 + theme_solarized() +   scale_colour_solarized("blue"),
+  "Scatter" = p2 + theme_solarized() +   scale_colour_solarized("blue")
+  )
+  p
+  })
+  plotOutput("light")
+```
+
+### Solarized dark
+
+```{r solarized_d}
+
+output$dark <- renderPlot({
+  p <- switch(
+  input$choice,
+  "Histogram" = p1 + theme_solarized(light = FALSE) +   scale_colour_solarized("red"),
+  "Scatter" = p2 + theme_solarized(light = FALSE) +   scale_colour_solarized("red")
+  )
+  p
+  })
+  plotOutput("dark")
+
+
+
+```
+
+### Stata
+
+```{r stata}
+
+output$stata <- renderPlot({
+  p <- switch(
+  input$choice,
+  "Histogram" = p1 + theme_stata() + scale_colour_stata(),
+  "Scatter" = p2 + theme_stata() + scale_colour_stata()
+  )
+  p
+  })
+  plotOutput("stata")
+
+
+```
+
+Row
+-----------------------------------------------------------------------
+
+### Inverse Gray
+
+```{r inverse}
+
+output$inverse <- renderPlot({
+
+    if (input$choice=="Histogram")  p <-p1 + theme_igray() 
+    if (input$choice=="Scatter") p <-p2 + theme_igray() 
+  
+p
+
+})
+plotOutput("inverse")
+
+```
+
+
+### Fivethirtyeight
+
+```{r Fivethirtyeight}
+
+output$Fivethirtyeight <- renderPlot({
+  p <- switch(
+  input$choice,
+  "Histogram" = p1 + theme_fivethirtyeight() +   scale_color_fivethirtyeight(),
+  "Scatter" = p2 + theme_fivethirtyeight() +    scale_color_fivethirtyeight()
+  )
+  p
+  })
+  plotOutput("Fivethirtyeight")
+```
+
+### Paul Tol
+
+```{r ptol}
+
+output$ptol <- renderPlot({
+  p <- switch(
+  input$choice,
+  "Histogram" = p1 + theme_minimal() +   scale_colour_ptol(),
+  "Scatter" = p2 + theme_minimal() +   scale_colour_ptol()
+  )
+  p
+  })
+  plotOutput("ptol")
+
+
+
+```
+
+### Tableau Scales
+
+```{r tableau}
+
+output$tableau <- renderPlot({
+  p <- switch(
+  input$choice,
+  "Histogram" = p1 + theme_igray() + scale_colour_tableau(),
+  "Scatter" = p2 + theme_igray() + scale_colour_tableau()
+  )
+  p
+  })
+  plotOutput("tableau")
+
+
+```
