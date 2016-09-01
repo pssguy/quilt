@@ -16,7 +16,7 @@ library(dplyr)
 
 ```{r input}
 
-selectInput("choice","Select Plot",c("Histogram","Line","Scatter"))
+selectInput("choice","Select Plot",c("Histogram","Line","Scatter"), selected="Scatter")
 
 ```
 
@@ -38,43 +38,25 @@ p3 <- airquality %>%
 Row
 -----------------------------------------------------------------------
 
-### Economist 
+### Out the Box
 
-```{r economist}
+```{r ggplot2}
 
-output$economist <- renderPlot({
-
-  
+output$gg <- renderPlot({
   p <- switch(
   input$choice,
-  "Histogram" = p1 + theme_economist() + scale_colour_economist(), 
-  "Scatter" = p2 + theme_economist() + scale_colour_economist(),
-  "Line" = p3 + theme_economist() + scale_colour_economist()
-  )
-  p
-
-
-})
-plotOutput("economist")
-
-```
-
-
-### Solarized light
-
-```{r solarized_l}
-
-output$light <- renderPlot({
-  p <- switch(
-  input$choice,
-  "Histogram" = p1 + theme_solarized() +   scale_colour_solarized("blue"),
-  "Scatter" = p2 + theme_solarized() +   scale_colour_solarized("blue"),
-  "Line" = p3 + theme_solarized() + scale_colour_solarized("blue")
+  "Histogram" = p1,
+  "Scatter" = p2,
+  "Line" = p3 
   )
   p
   })
-  plotOutput("light")
+  plotOutput("gg")
+
+
 ```
+
+
 
 ### Solarized dark
 
@@ -93,6 +75,22 @@ output$dark <- renderPlot({
 
 
 
+```
+
+### Solarized light
+
+```{r solarized_l}
+
+output$light <- renderPlot({
+  p <- switch(
+  input$choice,
+  "Histogram" = p1 + theme_solarized() +   scale_colour_solarized("blue"),
+  "Scatter" = p2 + theme_solarized() +   scale_colour_solarized("blue"),
+  "Line" = p3 + theme_solarized() + scale_colour_solarized("blue")
+  )
+  p
+  })
+  plotOutput("light")
 ```
 
 ### Stata
@@ -248,20 +246,24 @@ output$hc <- renderPlot({
 
 ```
 
-### out the Box
 
-```{r ggplot2}
+### Economist 
 
-output$gg <- renderPlot({
+```{r economist}
+
+output$economist <- renderPlot({
+
+  
   p <- switch(
   input$choice,
-  "Histogram" = p1,
-  "Scatter" = p2,
-  "Line" = p3 
+  "Histogram" = p1 + theme_economist() + scale_colour_economist(), 
+  "Scatter" = p2 + theme_economist() + scale_colour_economist(),
+  "Line" = p3 + theme_economist() + scale_colour_economist()
   )
   p
-  })
-  plotOutput("gg")
 
+
+})
+plotOutput("economist")
 
 ```
