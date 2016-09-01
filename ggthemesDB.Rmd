@@ -11,11 +11,12 @@ runtime: shiny
 library(flexdashboard)
 library(ggplot2)
 library(ggthemes)
+library(dplyr)
 ```
 
 ```{r input}
 
-selectInput("choice","Select Plot",c("Histogram","Scatter"))
+selectInput("choice","Select Plot",c("Histogram","Line","Scatter"))
 
 ```
 
@@ -28,6 +29,10 @@ p2 <- ggplot(mtcars, aes(x = wt, y = mpg, colour = factor(gear))) +
   geom_point() +
   ggtitle("Cars")
 
+p3 <- airquality %>% 
+  mutate(date=as.Date(paste0("1973-",Month,"-",Day))) %>% 
+  ggplot(aes(x= date,y=Temp))+ geom_line(colour="#ed448d")
+
 ```
 
 Row
@@ -39,10 +44,15 @@ Row
 
 output$economist <- renderPlot({
 
-    if (input$choice=="Histogram")  p <-p1 + theme_economist() + scale_colour_economist() 
-if (input$choice=="Scatter") p <-p2 + theme_economist() + scale_colour_economist() 
   
-p
+  p <- switch(
+  input$choice,
+  "Histogram" = p1 + theme_economist() + scale_colour_economist(), 
+  "Scatter" = p2 + theme_economist() + scale_colour_economist(),
+  "Line" = p3 + theme_economist() + scale_colour_economist()
+  )
+  p
+
 
 })
 plotOutput("economist")
@@ -58,7 +68,8 @@ output$light <- renderPlot({
   p <- switch(
   input$choice,
   "Histogram" = p1 + theme_solarized() +   scale_colour_solarized("blue"),
-  "Scatter" = p2 + theme_solarized() +   scale_colour_solarized("blue")
+  "Scatter" = p2 + theme_solarized() +   scale_colour_solarized("blue"),
+  "Line" = p3 + theme_solarized() + scale_colour_solarized("blue")
   )
   p
   })
@@ -73,7 +84,8 @@ output$dark <- renderPlot({
   p <- switch(
   input$choice,
   "Histogram" = p1 + theme_solarized(light = FALSE) +   scale_colour_solarized("red"),
-  "Scatter" = p2 + theme_solarized(light = FALSE) +   scale_colour_solarized("red")
+  "Scatter" = p2 + theme_solarized(light = FALSE) +   scale_colour_solarized("red"),
+  "Line" = p3 + theme_solarized(light = FALSE) +   scale_colour_solarized("red")
   )
   p
   })
@@ -91,7 +103,8 @@ output$stata <- renderPlot({
   p <- switch(
   input$choice,
   "Histogram" = p1 + theme_stata() + scale_colour_stata(),
-  "Scatter" = p2 + theme_stata() + scale_colour_stata()
+  "Scatter" = p2 + theme_stata() + scale_colour_stata(),
+  "Line" = p3 + theme_stata() + scale_colour_stata()
   )
   p
   })
@@ -109,12 +122,16 @@ Row
 
 output$inverse <- renderPlot({
 
-    if (input$choice=="Histogram")  p <-p1 + theme_igray() 
-    if (input$choice=="Scatter") p <-p2 + theme_igray() 
-  
-p
+  p <- switch(
+  input$choice,
+  "Histogram" = p1 + theme_igray(),
+  "Scatter" = p2 + theme_igray(),
+  "Line" = p3 + theme_igray()
+  )
+  p
+  })
 
-})
+
 plotOutput("inverse")
 
 ```
@@ -128,7 +145,8 @@ output$Fivethirtyeight <- renderPlot({
   p <- switch(
   input$choice,
   "Histogram" = p1 + theme_fivethirtyeight() +   scale_color_fivethirtyeight(),
-  "Scatter" = p2 + theme_fivethirtyeight() +    scale_color_fivethirtyeight()
+  "Scatter" = p2 + theme_fivethirtyeight() +    scale_color_fivethirtyeight(),
+  "Line" = p3 + theme_fivethirtyeight() +    scale_color_fivethirtyeight()
   )
   p
   })
@@ -143,7 +161,8 @@ output$ptol <- renderPlot({
   p <- switch(
   input$choice,
   "Histogram" = p1 + theme_minimal() +   scale_colour_ptol(),
-  "Scatter" = p2 + theme_minimal() +   scale_colour_ptol()
+  "Scatter" = p2 + theme_minimal() +   scale_colour_ptol(),
+  "Line" = p3 + theme_minimal() +   scale_colour_ptol()
   )
   p
   })
@@ -161,11 +180,88 @@ output$tableau <- renderPlot({
   p <- switch(
   input$choice,
   "Histogram" = p1 + theme_igray() + scale_colour_tableau(),
-  "Scatter" = p2 + theme_igray() + scale_colour_tableau()
+  "Scatter" = p2 + theme_igray() + scale_colour_tableau(),
+  "Line" = p3 + theme_igray() + scale_colour_tableau()
   )
   p
   })
   plotOutput("tableau")
+
+
+```
+
+Row
+-----------------------------------------------------------------------
+
+### Wall Street Journal
+
+```{r wsj}
+
+output$wsj <- renderPlot({
+ p <- switch(
+  input$choice,
+  "Histogram" = p1 + theme_wsj(), 
+  "Scatter" = p2 + theme_wsj(),
+  "Line" = p3 + theme_wsj() 
+  )
+  p
+  })
+
+
+plotOutput("wsj")
+
+```
+
+
+### Google Docs
+
+```{r Google}
+
+output$gdocs <- renderPlot({
+  p <- switch(
+  input$choice,
+  "Histogram" = p1 + theme_gdocs() +   scale_color_gdocs(),
+  "Scatter" = p2 + theme_gdocs() +    scale_color_gdocs(),
+   "Line" = p3 + theme_gdocs() +    scale_color_gdocs()
+  )
+  p
+  })
+  plotOutput("gdocs")
+```
+
+### Highcharts Dark
+
+```{r hc}
+
+output$hc <- renderPlot({
+  p <- switch(
+  input$choice,
+  "Histogram" = p1 + theme_hc(bgcolor = "darkunica") +   scale_colour_hc("darkunica"),
+  "Scatter" = p2 + theme_hc(bgcolor = "darkunica") +   scale_colour_hc("darkunica"),
+  "Line" = p3 + theme_hc(bgcolor = "darkunica") +   scale_colour_hc("darkunica")
+  )
+  p
+  })
+  plotOutput("hc")
+
+
+
+```
+
+### out the Box
+
+```{r ggplot2}
+
+output$gg <- renderPlot({
+  p <- switch(
+  input$choice,
+  "Histogram" = p1,
+  "Scatter" = p2,
+  "Line" = p3 
+  )
+  p
+  })
+  plotOutput("gg")
 
 
 ```
